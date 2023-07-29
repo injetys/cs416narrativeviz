@@ -76,14 +76,11 @@ function displayBarChartScene1(data) {
         .call(yAxis);
 }
 
+// ... (previous code)
+
 // Function to create and display the bar chart for Scene 2
 function displayBarChartScene2(data, selectedNationality) {
     const filteredData = data.filter(row => row.nationality_name === selectedNationality);
-    const counts = {};
-    filteredData.forEach(row => {
-        const league = row.league;
-        counts[league] = (counts[league] || 0) + 1;
-    });
 
     const chartContainer = d3.select("#chart");
     chartContainer.html(""); // Clear previous content
@@ -94,12 +91,12 @@ function displayBarChartScene2(data, selectedNationality) {
     const barPadding = 5;
 
     const xScale = d3.scaleBand()
-        .domain(Object.keys(counts))
+        .domain(filteredData.map(d => d.player_name))
         .range([margin.left, chartWidth - margin.right])
         .padding(0.1);
 
     const yScale = d3.scaleLinear()
-        .domain([0, d3.max(Object.values(counts))])
+        .domain([0, d3.max(filteredData, d => +d.overall)])
         .range([chartHeight - margin.bottom, margin.top]);
 
     const svg = chartContainer.append("svg")
@@ -108,25 +105,29 @@ function displayBarChartScene2(data, selectedNationality) {
 
     // Adding bars
     const bars = svg.selectAll("rect")
-        .data(Object.entries(counts))
+        .data(filteredData)
         .enter()
         .append("rect")
-        .attr("x", d => xScale(d[0]))
-        .attr("y", d => yScale(d[1]))
+        .attr("x", d => xScale(d.player_name))
+        .attr("y", d => yScale(d.overall))
         .attr("width", xScale.bandwidth())
-        .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
+        .attr("height", d => chartHeight - margin.bottom - yScale(d.overall))
         .attr("fill", "steelblue")
         .on("mouseover", function (event, d) {
-            // Tooltip for Scene 2: Show league on hover
+            // Tooltip for Scene 2: Show overall rating and player name on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 25) + "px")
-                .text(d[0]);
+                .html(`Player: ${d.player_name}<br>Overall Rating: ${d.overall}`);
         })
         .on("mouseout", function () {
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "none");
+        })
+        .on("click", function (event, d) {
+            // Trigger Scene 3 with selected player
+            showScene3(data, d.player_name);
         });
 
     // Adding y-axis
@@ -137,51 +138,74 @@ function displayBarChartScene2(data, selectedNationality) {
         .call(yAxis);
 }
 
-// Function to trigger Scene 1 (Overview)
-function showScene1() {
-    const csvFilePath = 'female_players_legacy.csv';
-    d3.text(csvFilePath)
-        .then(csvData => {
-            const data = parseCSVData(csvData);
-            displayBarChartScene1(data);
-        })
-        .catch(error => console.error("Error fetching data:", error));
-}
-
-// ... (previous code)
-
-// Function to trigger Scene 3 (Conclusion)
-function showScene3(data, selectedLeague) {
-    const filteredData = data.filter(row => row.league === selectedLeague);
+// ... (the rest of the code)
+// Function to create and display the line chart for Scene 3
+function displayLineChartScene3(data, selectedPlayerName) {
+    const selectedPlayerData = data.find(row => row.player_name === selectedPlayerName);
 
     const chartContainer = d3.select("#chart");
     chartContainer.html(""); // Clear previous content
 
-    const chartWidth = 300;
-    const chartHeight = 150;
+    const chartWidth = 600;
+    const chartHeight = 300;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+
+    const positions = [
+        "ls", "st", "rs", "lw", "lf", "cf", "rf", "rw", "lam", "cam", "ram",
+        "lm", "lcm", "cm", "rcm", "rm", "lwb", "ldm", "cdm", "rdm", "rwb",
+        "lb", "lcb", "cb", "rcb", "rb", "gk"
+    ];
+
+    const xScale = d3.scaleBand()
+        .domain(positions)
+        .range([margin.left, chartWidth - margin.right])
+        .padding(0.1);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, 100]) // Assuming rating is between 0 and 100
+        .range([chartHeight - margin.bottom, margin.top]);
 
     const svg = chartContainer.append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight);
 
-    // Calculate average height and weight
-    const averageHeight = d3.mean(filteredData, d => +d.height_cm);
-    const averageWeight = d3.mean(filteredData, d => +d.weight_kg);
+    // Adding lines
+    const line = d3.line()
+        .x(d => xScale(d.position))
+        .y(d => yScale(d.rating));
 
-    // Display average height
-    svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight / 3)
-        .attr("text-anchor", "middle")
-        .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
+    svg.append("path")
+        .datum(positions.map(position => ({ position, rating: selectedPlayerData[position] })))
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 2)
+        .attr("d", line);
 
-    // Display average weight
-    svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight * 2 / 3)
-        .attr("text-anchor", "middle")
-        .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
+    // Adding points
+    svg.selectAll("circle")
+        .data(positions.map(position => ({ position, rating: selectedPlayerData[position] })))
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(d.position) + xScale.bandwidth() / 2)
+        .attr("cy", d => yScale(d.rating))
+        .attr("r", 4)
+        .attr("fill", "steelblue")
+        .on("mouseover", function (event, d) {
+            // Tooltip for Scene 3: Show rating for each position on hover
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "inline")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px")
+                .text(`Rating: ${d.rating}`);
+        })
+        .on("mouseout", function () {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "none");
+        });
 }
+
+// ... (the rest of the code)
+// ... (previous code)
 
 // Function to trigger Scene 2 (Drill Down)
 function showScene2(selectedNationality) {
@@ -194,5 +218,32 @@ function showScene2(selectedNationality) {
         .catch(error => console.error("Error fetching data:", error));
 }
 
+// Function to trigger Scene 3 (Player Performance Line Chart)
+function showScene3(data, selectedPlayerName) {
+    const chartContainer = d3.select("#chart");
+    chartContainer.html(""); // Clear previous content
+
+    // Call the function to display Scene 3 (Player Performance Line Chart)
+    displayLineChartScene3(data, selectedPlayerName);
+}
+
+// Main function to fetch data and display on the page
+function main() {
+    const csvFilePath = 'female_players_legacy.csv';
+    d3.text(csvFilePath)
+        .then(csvData => {
+            const data = parseCSVData(csvData);
+
+            // Trigger Scene 1 (Overview)
+            displayBarChartScene1(data);
+
+            // Define click event listener for Scene 2
+            d3.selectAll("rect").on("click", function (event, d) {
+                showScene2(d[0]); // d[0] contains the selected nationality from Scene 1
+            });
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
+
 // Call the main function when the script is loaded
-showScene1();
+main();
