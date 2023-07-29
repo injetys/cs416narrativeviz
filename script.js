@@ -1,66 +1,58 @@
-// Function to read and parse CSV data
+index html: // Function to read and parse CSV data
 function parseCSVData(csvData) {
     const rows = csvData.split("\n").slice(1); // Skipping the header row
     const rowData = rows.map(row => row.split(","));
     return rowData;
 }
 
-// Function to count the players for each nationality
-function countPlayersByNationality(csvData) {
-    const data = parseCSVData(csvData);
-    const nationalityColumnIndex = 3; // Assuming the nationality column is at index 3 (0-indexed)
-    const playerCountByNationality = {};
+// Function to count the rows in the dataset
+function countRows(csvData) {
+    return csvData.length;
+}
 
+// Function to display the row count on the HTML page
+function displayRowCount(rowCount) {
+    const rowCountElement = document.getElementById("row-count");
+    rowCountElement.textContent = `Row Count: ${rowCount}`;
+}
+
+// Function to display the data table on the HTML page
+function displayDataTable(csvData) {
+    const data = parseCSVData(csvData);
+    const table = document.getElementById("data-table");
+
+    // Creating the table headers
+    const headers = data[0];
+    const headerRow = document.createElement("tr");
+    for (const header of headers) {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+    }
+    table.appendChild(headerRow);
+
+    // Creating the table rows
     for (let i = 1; i < data.length; i++) {
         const row = data[i];
-        const nationality = row[nationalityColumnIndex].trim();
-
-        // Count players for each nationality
-        if (playerCountByNationality[nationality]) {
-            playerCountByNationality[nationality]++;
-        } else {
-            playerCountByNationality[nationality] = 1;
+        const dataRow = document.createElement("tr");
+        for (const cell of row) {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            dataRow.appendChild(td);
         }
+        table.appendChild(dataRow);
     }
-
-    return playerCountByNationality;
 }
 
-// Function to display the graph
-function displayPlayerCountGraph(playerCountByNationality) {
-    const chartData = {
-        labels: Object.keys(playerCountByNationality),
-        datasets: [
-            {
-                label: 'Player Count by Nationality',
-                data: Object.values(playerCountByNationality),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)', // Adjust the color as needed
-                borderColor: 'rgba(75, 192, 192, 1)', // Adjust the color as needed
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-    };
-
-    const playerCountChart = new Chart('player-count-chart', {
-        type: 'bar', // You can change this to 'pie', 'doughnut', 'line', etc. as desired
-        data: chartData,
-        options: chartOptions,
-    });
-}
-
-// Main function to fetch data and display the graph
+// Main function to fetch data and display on the page
 function main() {
     const csvFilePath = 'female_players_legacy.csv';
     fetch(csvFilePath, { mode: 'no-cors' })
         .then(response => response.text())
         .then(csvData => {
-            const playerCountByNationality = countPlayersByNationality(csvData);
-            displayPlayerCountGraph(playerCountByNationality);
+            const rowCount = countRows(csvData);
+            displayRowCount(rowCount);
+            displayDataTable(csvData);
         })
         .catch(error => console.error("Error fetching data:", error));
 }
