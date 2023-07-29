@@ -4,197 +4,138 @@ function parseCSVData(csvData) {
     return rows;
 }
 
-// Function to count the rows in the dataset
-function countRows(csvData) {
-    const rows = csvData.split("\n");
-    return rows.length;
-}
-
-// ... (the rest of the code)
-
-// ... (previous code)
-
-// Function to create and display the bar chart for Scene 1
-function displayBarChartScene1(data) {
-    const counts = {};
-    data.forEach(row => {
-        const nationality = row.nationality_name;
-        counts[nationality] = (counts[nationality] || 0) + 1;
-    });
-
+// Function to create and display Scene 1
+function displayScene1(data) {
+    // Clear previous content
     const chartContainer = d3.select("#chart");
-    chartContainer.html(""); // Clear previous content
+    chartContainer.html("");
 
-    const chartWidth = 500;
-    const chartHeight = 300;
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const barPadding = 5;
+    // Your code for Scene 1: Display an overview chart with some annotations
+    // For example, you can create a bar chart showing player count per nationality
+    // Add annotations to highlight interesting insights in the data
 
-    const xScale = d3.scaleBand()
-        .domain(Object.keys(counts))
-        .range([margin.left, chartWidth - margin.right])
-        .padding(0.1);
+    // ... (scene 1 code)
 
-    const yScale = d3.scaleLinear()
-        .domain([0, d3.max(Object.values(counts))])
-        .range([chartHeight - margin.bottom, margin.top]);
+    // Scene 1 Annotations
+    const annotationScene1 = [
+        // Annotation for an interesting data point or trend
+        { note: { label: "Tooltip for interesting point" }, // Add more info here if needed
+          data: { nationality_name: "Country A", count: 50 },
+          dx: 50, dy: -50, // Offset from the data point
+          subject: { radius: 5 } // Highlight the data point
+        },
+        // Add more annotations as needed
+    ];
 
-    const svg = chartContainer.append("svg")
-        .attr("width", chartWidth)
-        .attr("height", chartHeight);
+    // Draw Scene 1 Annotations
+    const makeAnnotations = d3.annotation()
+        .type(d3.annotationCalloutCircle)
+        .annotations(annotationScene1);
 
-    // Adding bars
-    
-    const bars = svg.selectAll("rect")
-        .data(Object.entries(counts))
-        .enter()
-        .append("rect")
-        .attr("x", d => xScale(d[0]))
-        .attr("y", d => yScale(d[1]))
-        .attr("width", xScale.bandwidth())
-        .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
-        .attr("fill", "steelblue")
-        .attr("title", d => d[0]) // Add tooltip for nationality_name
-        .on("mouseover", function (event, d) {
-            const tooltip = d3.select("#tooltip");
-            tooltip.style("display", "inline")
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY - 25) + "px")
-                .text(d[0]);
-        })
-        .on("mouseout", function () {
-            const tooltip = d3.select("#tooltip");
-            tooltip.style("display", "none");
-        })
-        .on("click", function (event, d) {
-            showScene2(d[0]);
-        });
-    
+    d3.select("#chart svg")
+        .append("g")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations);
 
-    // Adding y-axis
-    const yAxis = d3.axisLeft(yScale);
-    svg.append("g")
-        .attr("class", "y-axis")
-        .attr("transform", `translate(${margin.left}, 0)`)
-        .call(yAxis);
+    // Add any other scene-specific code and annotations for Scene 1
 }
 
-// Function to create and display the bar chart for Scene 2
-function displayBarChartScene2(data, selectedNationality) {
-    const filteredData = data.filter(row => row.nationality_name === selectedNationality);
-    const counts = {};
-    filteredData.forEach(row => {
-        const league = row.league;
-        counts[league] = (counts[league] || 0) + 1;
-    });
-
+// Function to create and display Scene 2
+function displayScene2(data) {
+    // Clear previous content
     const chartContainer = d3.select("#chart");
-    chartContainer.html(""); // Clear previous content
+    chartContainer.html("");
 
-    const chartWidth = 500;
-    const chartHeight = 300;
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const barPadding = 5;
+    // Your code for Scene 2: Display a different chart or visualization with annotations
+    // For example, a scatter plot showing player height and weight
+    // Add annotations to provide context and insights about the scatter plot
 
-    const xScale = d3.scaleBand()
-        .domain(Object.keys(counts))
-        .range([margin.left, chartWidth - margin.right])
-        .padding(0.1);
+    // ... (scene 2 code)
 
-    const yScale = d3.scaleLinear()
-        .domain([0, d3.max(Object.values(counts))])
-        .range([chartHeight - margin.bottom, margin.top]);
+    // Scene 2 Annotations
+    const annotationScene2 = [
+        // Annotation for a specific data point or trend
+        { note: { label: "Tooltip for specific point" }, // Add more info here if needed
+          data: { height_cm: 170, weight_kg: 60 },
+          dx: 50, dy: -50, // Offset from the data point
+          subject: { radius: 5 } // Highlight the data point
+        },
+        // Add more annotations as needed
+    ];
 
-    const svg = chartContainer.append("svg")
-        .attr("width", chartWidth)
-        .attr("height", chartHeight);
+    // Draw Scene 2 Annotations
+    const makeAnnotations = d3.annotation()
+        .type(d3.annotationCalloutCircle)
+        .annotations(annotationScene2);
 
-    // Adding bars
-    const bars = svg.selectAll("rect")
-        .data(Object.entries(counts))
-        .enter()
-        .append("rect")
-        .attr("x", d => xScale(d[0]))
-        .attr("y", d => yScale(d[1]))
-        .attr("width", xScale.bandwidth())
-        .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
-        .attr("fill", "steelblue")
-        .attr("title", d => d[0]) // Add tooltip for league name
-        .on("mouseover", function (event, d) {
-            const tooltip = d3.select("#tooltip");
-            tooltip.style("display", "inline")
-                .style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY - 25) + "px")
-                .text(d[0]);
-        })
-        .on("mouseout", function () {
-            const tooltip = d3.select("#tooltip");
-            tooltip.style("display", "none");
-        });
+    d3.select("#chart svg")
+        .append("g")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations);
 
-    // Adding y-axis
-    const yAxis = d3.axisLeft(yScale);
-    svg.append("g")
-        .attr("class", "y-axis")
-        .attr("transform", `translate(${margin.left}, 0)`)
-        .call(yAxis);
+    // Add any other scene-specific code and annotations for Scene 2
 }
 
-// Function to trigger Scene 1 (Overview)
-function showScene1() {
+// Function to create and display Scene 3
+function displayScene3(data) {
+    // Clear previous content
+    const chartContainer = d3.select("#chart");
+    chartContainer.html("");
+
+    // Your code for Scene 3: Another chart or visualization with annotations
+    // For example, a line chart showing player ages over time
+    // Add annotations to highlight important trends or events
+
+    // ... (scene 3 code)
+
+    // Scene 3 Annotations
+    const annotationScene3 = [
+        // Annotation for an important trend or event
+        { note: { label: "Tooltip for trend or event" }, // Add more info here if needed
+          data: { year: "2020", age: 25 },
+          dx: 50, dy: -50, // Offset from the data point
+          subject: { radius: 5 } // Highlight the data point
+        },
+        // Add more annotations as needed
+    ];
+
+    // Draw Scene 3 Annotations
+    const makeAnnotations = d3.annotation()
+        .type(d3.annotationCalloutCircle)
+        .annotations(annotationScene3);
+
+    d3.select("#chart svg")
+        .append("g")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations);
+
+    // Add any other scene-specific code and annotations for Scene 3
+}
+
+// Function to trigger the narrative visualization
+function triggerNarrativeVisualization() {
     const csvFilePath = 'female_players_legacy.csv';
     d3.text(csvFilePath)
         .then(csvData => {
             const data = parseCSVData(csvData);
-            displayBarChartScene1(data);
-        })
-        .catch(error => console.error("Error fetching data:", error));
-}
-// ... (previous code)
 
-// Function to trigger Scene 3 (Conclusion)
-function showScene3(data, selectedLeague) {
-    const filteredData = data.filter(row => row.league === selectedLeague);
+            // Display Scene 1
+            displayScene1(data);
 
-    const chartContainer = d3.select("#chart");
-    chartContainer.html(""); // Clear previous content
+            // Wait for a few seconds before proceeding to Scene 2
+            setTimeout(() => {
+                // Display Scene 2
+                displayScene2(data);
 
-    const chartWidth = 300;
-    const chartHeight = 150;
-
-    const svg = chartContainer.append("svg")
-        .attr("width", chartWidth)
-        .attr("height", chartHeight);
-
-    // Calculate average height and weight
-    const averageHeight = d3.mean(filteredData, d => +d.height_cm);
-    const averageWeight = d3.mean(filteredData, d => +d.weight_kg);
-
-    // Display average height
-    svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight / 3)
-        .attr("text-anchor", "middle")
-        .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
-
-    // Display average weight
-    svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight * 2 / 3)
-        .attr("text-anchor", "middle")
-        .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
-}
-
-// Function to trigger Scene 2 (Drill Down)
-function showScene2(selectedNationality) {
-    const csvFilePath = 'female_players_legacy.csv';
-    d3.text(csvFilePath)
-        .then(csvData => {
-            const data = parseCSVData(csvData);
-            displayBarChartScene2(data, selectedNationality);
+                // Wait for a few seconds before proceeding to Scene 3
+                setTimeout(() => {
+                    // Display Scene 3
+                    displayScene3(data);
+                }, 5000); // Wait for 5 seconds before showing Scene 3
+            }, 5000); // Wait for 5 seconds before showing Scene 2
         })
         .catch(error => console.error("Error fetching data:", error));
 }
 
-// Call the main function when the script is loaded
-showScene1();
+// Call the function to trigger the narrative visualization when the script is loaded
+triggerNarrativeVisualization();
