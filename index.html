@@ -1,34 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Narrative Visualization: Total Count of Female Players</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Dataset</title>
+  <!-- Include D3 library -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-    <h1>Narrative Visualization: Total Count of Female Players</h1>
-    <div id="totalPlayersCount"></div>
-
-    <script>
-        // Load the CSV file and calculate the total count of players
-        d3.csv("https://injetys.github.io/cs416narrativeviz/female_playerslegacy.csv")
-            .then(data => {
-                const totalCount = data.length;
-                displayTotalCount(totalCount);
-            })
-            .catch(error => {
-                console.error("Error loading CSV file:", error);
-            });
-
-        // Function to display the total count of players
-        function displayTotalCount(totalCount) {
-            const totalPlayersCountDiv = d3.select("#totalPlayersCount");
-
-            totalPlayersCountDiv
-                .append("p")
-                .text(`Total Female Players: ${totalCount}`);
-        }
-    </script>
+  <div id="visualization-container"></div>
+  <script src="script.js"></script>
 </body>
 </html>
