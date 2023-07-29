@@ -1,92 +1,91 @@
-// Sample data
-const data = [
-    { category: "A", value: 10 },
-    { category: "B", value: 20 },
-    { category: "C", value: 15 },
-    // Add more data points as needed
-];
-
-// Parameters
-let currentScene = 1;
-
-// Container element
-const container = d3.select("#visualization-container");
-
-// Function to create the first scene
-function createScene1() {
-    // Clear the container
-    container.html("");
-
-    // Create scene elements
-    container.append("h2").text("Scene 1");
-    container.append("p").text("This is the first scene of the narrative.");
-
-    // Add button for user interaction
-    container
-        .append("button")
-        .text("Continue to Scene 2")
-        .on("click", () => {
-            currentScene = 2;
-            updateVisualization();
-        });
-}
-
-// Function to create the second scene
-function createScene2() {
-    // Clear the container
-    container.html("");
-
-    // Create scene elements
-    container.append("h2").text("Scene 2");
-    container.append("p").text("This is the second scene of the narrative.");
-
-    // Add chart for data visualization (e.g., a bar chart)
-    const svg = container.append("svg")
-        .attr("width", 400)
-        .attr("height", 300);
-
-    // Add chart elements using D3
-
-    // Add button for user interaction
-    container
-        .append("button")
-        .text("Continue to Scene 3")
-        .on("click", () => {
-            currentScene = 3;
-            updateVisualization();
-        });
-}
-
-// Function to create the third scene
-function createScene3() {
-    // Clear the container
-    container.html("");
-
-    // Create scene elements
-    container.append("h2").text("Scene 3");
-    container.append("p").text("This is the final scene of the narrative.");
-
-    // Add additional chart or data visualization (if needed)
-
-    // End of the narrative
-}
-
-// Function to update the visualization based on the current scene
-function updateVisualization() {
-    switch (currentScene) {
-        case 1:
-            createScene1();
-            break;
-        case 2:
-            createScene2();
-            break;
-        case 3:
-            createScene3();
-            break;
-        default:
-            console.error("Invalid scene number");
-    }
-}
-
-// Initialize the visualization
-updateVisualization();
+// Function to fetch data from the CSV file
+function getData() {
+    return d3.csv("C:/Users/srinj/Downloads/archive3/female_playerslegacy.csv", (d) => {
+      return {
+        nationality: d.nationality,
+      };
+    });
+  }
+  
+  // Function to create the bar graph
+  async function createBarGraph() {
+    const data = await getData();
+  
+    // Count the number of players from each nationality
+    const nationalityCounts = {};
+    data.forEach((d) => {
+      nationalityCounts[d.nationality] = (nationalityCounts[d.nationality] || 0) + 1;
+    });
+  
+    // Convert the nationalityCounts object to an array of objects
+    const nationalityData = Object.keys(nationalityCounts).map((nationality) => ({
+      nationality,
+      count: nationalityCounts[nationality],
+    }));
+  
+    // Set up the dimensions and margins for the chart
+    const margin = { top: 30, right: 30, bottom: 70, left: 60 };
+    const width = 600 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+  
+    // Create the SVG element
+    const svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+    // Define the x and y scales
+    const xScale = d3.scaleBand()
+      .domain(nationalityData.map((d) => d.nationality))
+      .range([0, width])
+      .padding(0.2);
+  
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(nationalityData, (d) => d.count)])
+      .range([height, 0]);
+  
+    // Create the bars
+    svg.selectAll(".bar")
+      .data(nationalityData)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", (d) => xScale(d.nationality))
+      .attr("width", xScale.bandwidth())
+      .attr("y", (d) => yScale(d.count))
+      .attr("height", (d) => height - yScale(d.count));
+  
+    // Add x-axis
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(xScale))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-45)");
+  
+    // Add y-axis
+    svg.append("g")
+      .call(d3.axisLeft(yScale));
+  
+    // Add axis labels
+    svg.append("text")
+      .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
+      .style("text-anchor", "middle")
+      .text("Nationality");
+  
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Number of Players");
+  }
+  
+  // Call the createBarGraph function to generate the bar graph
+  createBarGraph();
+  
