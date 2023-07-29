@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Narrative Visualization - Interactive Web Page</title>
+    <title>Narrative Visualization - Interactive Martini Glass</title>
+    <style>
+        /* Add any CSS styling you need for your visualization */
+        /* For example, you can style the tooltip div */
+        #tooltip {
+            position: absolute;
+            display: none;
+            background-color: #f9f9f9;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h1>Narrative Visualization - Interactive Web Page</h1>
+    <h1>Narrative Visualization - Interactive Martini Glass</h1>
     <div id="chart"></div>
-
-    <!-- Add the tooltip element for annotations -->
-    <div id="tooltip" style="display: none; position: absolute; background-color: #f9f9f9; padding: 5px; border: 1px solid #ccc;"></div>
+    <div id="tooltip"></div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="https://unpkg.com/d3-annotation@4.0.2/build/d3-annotation.min.js"></script>
-    <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+    <script src="https://unpkg.com/d3-annotation@4.2.2/build/d3-annotation.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
