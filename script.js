@@ -1,54 +1,50 @@
+// Function to parse CSV data using D3
 function parseCSVData(csvData) {
-    const rowData = rows.map(row => row.split(","));
-    return rowData;
-}
-
-// Function to count the rows in the dataset
-function countRows(csvData) {
-    return csvData.length;
+    const rows = d3.csvParseRows(csvData);
+    return rows;
 }
 
 // Function to display the row count on the HTML page
 function displayRowCount(rowCount) {
-    const rowCountElement = document.getElementById("row-count");
-    rowCountElement.textContent = `Row Count: ${rowCount}`;
+    const rowCountElement = d3.select("#row-count");
+    rowCountElement.text(`Row Count: ${rowCount}`);
 }
 
 // Function to display the data table on the HTML page
 function displayDataTable(csvData) {
     const data = parseCSVData(csvData);
-    const table = document.getElementById("data-table");
+    const table = d3.select("#data-table");
 
     // Creating the table headers
     const headers = data[0];
-    const headerRow = document.createElement("tr");
-    for (const header of headers) {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-    }
-    table.appendChild(headerRow);
+    const headerRow = table.append("tr");
+    headerRow.selectAll("th")
+        .data(headers)
+        .enter()
+        .append("th")
+        .text(header => header);
 
     // Creating the table rows
-    for (let i = 1; i < data.length; i++) {
-        const row = data[i];
-        const dataRow = document.createElement("tr");
-        for (const cell of row) {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            dataRow.appendChild(td);
-        }
-        table.appendChild(dataRow);
-    }
+    const rows = table.selectAll("tr.data-row")
+        .data(data.slice(1)) // Skip the first row (header)
+        .enter()
+        .append("tr")
+        .attr("class", "data-row");
+
+    // Adding cells to the rows
+    rows.selectAll("td")
+        .data(row => row)
+        .enter()
+        .append("td")
+        .text(cell => cell);
 }
 
 // Main function to fetch data and display on the page
 function main() {
     const csvFilePath = 'female_players_legacy.csv';
-    fetch(csvFilePath, { mode: 'no-cors' })
-        .then(response => response.text())
+    d3.text(csvFilePath)
         .then(csvData => {
-            const rowCount = countRows(csvData);
+            const rowCount = parseCSVData(csvData).length;
             displayRowCount(rowCount);
             displayDataTable(csvData);
         })
