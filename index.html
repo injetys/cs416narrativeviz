@@ -5,12 +5,70 @@
 </head>
 <body>
     <h1>Narrative Visualization - Interactive Slideshow</h1>
+    <p>Scene 1: Overview - Bar chart showing players count by nationality. Hover over bars to see nationality names.</p>
+    <p>Scene 2: Drill Down - Click on a nationality bar in Scene 1 to see players' overall rating within that nationality. Hover over bars to see player names and ratings.</p>
+    <p>Scene 3: Player Performance - Click on a player bar in Scene 2 to explore the player's performance in different positions. Hover over points to see ratings for each position.</p>
     <div id="chart"></div>
 
     <!-- Element for the tooltip -->
     <div id="tooltip" style="position: absolute; display: none; background-color: #fff; padding: 5px; border: 1px solid #ccc;"></div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Function to parse CSV data using D3
+        function parseCSVData(csvData) {
+            const rows = d3.csvParse(csvData);
+            return rows;
+        }
+
+        // Function to count the rows in the dataset
+        function countRows(csvData) {
+            const rows = csvData.split("\n");
+            return rows.length;
+        }
+
+        // ... (previous code)
+
+        // Function to trigger Scene 2 (Drill Down)
+        function showScene2(selectedNationality) {
+            const csvFilePath = 'female_players_legacy.csv';
+            d3.text(csvFilePath)
+                .then(csvData => {
+                    const data = parseCSVData(csvData);
+                    displayBarChartScene2(data, selectedNationality);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        // Function to trigger Scene 3 (Player Performance Line Chart)
+        function showScene3(data, selectedPlayerName) {
+            const chartContainer = d3.select("#chart");
+            chartContainer.html(""); // Clear previous content
+
+            // Call the function to display Scene 3 (Player Performance Line Chart)
+            displayLineChartScene3(data, selectedPlayerName);
+        }
+
+        // Main function to fetch data and display on the page
+        function main() {
+            const csvFilePath = 'female_players_legacy.csv';
+            d3.text(csvFilePath)
+                .then(csvData => {
+                    const data = parseCSVData(csvData);
+
+                    // Trigger Scene 1 (Overview)
+                    displayBarChartScene1(data);
+
+                    // Define click event listener for Scene 2
+                    d3.selectAll("rect").on("click", function (event, d) {
+                        showScene2(d[0]); // d[0] contains the selected nationality from Scene 1
+                    });
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        // Call the main function when the script is loaded
+        main();
+    </script>
 </body>
 </html>
