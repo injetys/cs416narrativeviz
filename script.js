@@ -53,6 +53,15 @@ function displayPlayerCountGraph(playerCountByNationality) {
     });
 }
 
+// Function to show/hide loading indicator
+function toggleLoadingIndicator() {
+    const loadingDiv = document.getElementById('loading');
+    const chartCanvas = document.getElementById('player-count-chart');
+
+    loadingDiv.style.display = 'none';
+    chartCanvas.style.display = 'block';
+}
+
 // Main function to fetch data and display the graph
 function main() {
     const csvFilePath = 'female_players_legacy.csv';
@@ -61,6 +70,7 @@ function main() {
         .then(csvData => {
             const playerCountByNationality = countPlayersByNationality(csvData);
             displayPlayerCountGraph(playerCountByNationality);
+            toggleLoadingIndicator();
         })
         .catch(error => console.error("Error fetching data:", error));
 }
