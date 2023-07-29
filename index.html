@@ -1,14 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Display Row Counts</title>
+    <title>CSV Data Display</title>
 </head>
 <body>
-    <h1>Table Row Counts:</h1>
-    <p id="row-count">Loading...</p>
-    <table id="data-table">
-        <!-- Your table content will be generated dynamically using JavaScript -->
-    </table>
-    <script src="script.js"></script>
+    <h1>CSV Data Display</h1>
+    <p id="row-count"></p>
+    <table id="data-table"></table>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // Function to display the row count on the HTML page
+        function displayRowCount(rowCount) {
+            const rowCountElement = d3.select("#row-count");
+            rowCountElement.text(`Row Count: ${rowCount}`);
+        }
+
+        // Function to display the data table on the HTML page
+        function displayDataTable(data) {
+            const table = d3.select("#data-table");
+
+            // Creating the table headers
+            const headers = data.columns;
+            const headerRow = table.append("tr");
+            headers.forEach(header => {
+                headerRow.append("th").text(header);
+            });
+
+            // Creating the table rows
+            const rows = table.selectAll("tr.data-row").data(data).enter()
+                .append("tr").attr("class", "data-row");
+
+            // Adding cells to the rows
+            const cells = rows.selectAll("td").data(row => Object.values(row)).enter()
+                .append("td").text(d => d);
+        }
+
+        // Main function to fetch data and display on the page
+        function main() {
+            const csvFilePath = 'female_players_legacy.csv';
+            d3.csv(csvFilePath)
+                .then(data => {
+                    const rowCount = data.length;
+                    displayRowCount(rowCount);
+                    displayDataTable(data);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        // Call the main function when the script is loaded
+        main();
+    </script>
 </body>
 </html>
