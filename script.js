@@ -1,4 +1,3 @@
-index html: // Function to read and parse CSV data
 function parseCSVData(csvData) {
     const rows = csvData.split("\n").slice(1); // Skipping the header row
     const rowData = rows.map(row => row.split(","));
