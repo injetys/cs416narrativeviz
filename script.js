@@ -40,29 +40,18 @@ function displayBarChart(data) {
         .attr("y", d => yScale(d[1]))
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
-        .attr("fill", "steelblue");
-
-    // Adding labels to the bars
-    svg.selectAll(".bar-label")
-        .data(Object.entries(counts))
-        .enter()
-        .append("text")
-        .attr("class", "bar-label")
-        .attr("x", d => xScale(d[0]) + xScale.bandwidth() / 2)
-        .attr("y", d => yScale(d[1]) - 5)
-        .attr("text-anchor", "middle")
-        .text(d => d[1]);
-
-    // Adding nationality_name labels under the bars
-    svg.selectAll(".nationality-label")
-        .data(Object.entries(counts))
-        .enter()
-        .append("text")
-        .attr("class", "nationality-label")
-        .attr("x", d => xScale(d[0]) + xScale.bandwidth() / 2)
-        .attr("y", chartHeight - margin.bottom + 20)
-        .attr("text-anchor", "middle")
-        .text(d => d[0]);
+        .attr("fill", "steelblue")
+        .on("mouseover", function (event, d) {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "inline")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px")
+                .text(d[0]);
+        })
+        .on("mouseout", function () {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "none");
+        });
 
     // Adding y-axis
     const yAxis = d3.axisLeft(yScale);
