@@ -1,5 +1,5 @@
 // Define the CSV file path
-const csvFilePath = "https://injetys.github.io/cs416narrativeviz/female_playerslegacy.csv";
+const csvFilePath = "https://github.com/injetys/cs416narrativeviz/blob/main/female_players_legacy.csv";
 
 // Function to create the bar graph
 function createBarGraph(data) {
