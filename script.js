@@ -44,6 +44,7 @@ function displayBarChartScene1(data) {
         .attr("height", chartHeight);
 
     // Adding bars
+    
     const bars = svg.selectAll("rect")
         .data(Object.entries(counts))
         .enter()
@@ -53,8 +54,8 @@ function displayBarChartScene1(data) {
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
         .attr("fill", "steelblue")
+        .attr("title", d => d[0]) // Add tooltip for nationality_name
         .on("mouseover", function (event, d) {
-            // Tooltip for Scene 1: Show nationality_name on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
@@ -66,9 +67,9 @@ function displayBarChartScene1(data) {
             tooltip.style("display", "none");
         })
         .on("click", function (event, d) {
-            // Trigger drill down to Scene 2 with selected nationality
             showScene2(d[0]);
         });
+    
 
     // Adding y-axis
     const yAxis = d3.axisLeft(yScale);
@@ -118,8 +119,8 @@ function displayBarChartScene2(data, selectedNationality) {
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
         .attr("fill", "steelblue")
+        .attr("title", d => d[0]) // Add tooltip for league name
         .on("mouseover", function (event, d) {
-            // Tooltip for Scene 2: Show league on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
