@@ -1,5 +1,4 @@
 function parseCSVData(csvData) {
-    const rows = csvData.split("\n").slice(1); // Skipping the header row
     const rowData = rows.map(row => row.split(","));
     return rowData;
 }
