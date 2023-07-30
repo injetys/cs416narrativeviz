@@ -177,7 +177,7 @@ function showScene2(selectedNationality) {
 function showScene3(data, selectedLeague) {
     const filteredData = data.filter(row => row.league === selectedLeague);
 
-    const chartContainer = d3.select("#chart");
+    const chartContainer = d3.select("#chart3");
     chartContainer.html(""); // Clear previous content
 
     const chartWidth = 300;
