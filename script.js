@@ -79,12 +79,14 @@ function displayBarChartScene1(data) {
         .call(yAxis);
 }
 
-
-
-// Function to trigger Scene 2 (Drill Down)
-// Function to create and display the scatter plot for Scene 2
-function displayScatterPlotScene2(data, selectedNationality) {
+// Function to create and display the bar chart for Scene 2
+function displayBarChartScene2(data, selectedNationality) {
     const filteredData = data.filter(row => row.nationality_name === selectedNationality);
+    const counts = {};
+    filteredData.forEach(row => {
+        const league = row.league;
+        counts[league] = (counts[league] || 0) + 1;
+    });
 
     const chartContainer = d3.select("#chart2");
     chartContainer.html(""); // Clear previous content
@@ -92,48 +94,47 @@ function displayScatterPlotScene2(data, selectedNationality) {
     const chartWidth = 500;
     const chartHeight = 300;
     const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+    const barPadding = 5;
 
-    const xScale = d3.scaleLinear()
-        .domain(d3.extent(filteredData, d => +d.age))
-        .range([margin.left, chartWidth - margin.right]);
+    const xScale = d3.scaleBand()
+        .domain(Object.keys(counts))
+        .range([margin.left, chartWidth - margin.right])
+        .padding(0.1);
 
     const yScale = d3.scaleLinear()
-        .domain(d3.extent(filteredData, d => +d.overall))
+        .domain([0, d3.max(Object.values(counts))])
         .range([chartHeight - margin.bottom, margin.top]);
 
     const svg = chartContainer.append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight);
 
-    // Adding circles (scatter plot points)
-    const circles = svg.selectAll("circle")
-        .data(filteredData)
+    // Adding bars
+    const bars = svg.selectAll("rect")
+        .data(Object.entries(counts))
         .enter()
-        .append("circle")
-        .attr("cx", d => xScale(+d.age))
-        .attr("cy", d => yScale(+d.overall))
-        .attr("r", 5)
+        .append("rect")
+        .attr("x", d => xScale(d[0]))
+        .attr("y", d => yScale(d[1]))
+        .attr("width", xScale.bandwidth())
+        .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
         .attr("fill", "steelblue")
-        .attr("opacity", 0.7)
         .on("mouseover", function (event, d) {
-            // Tooltip for Scene 2: Show player details on hover
+            // Tooltip for Scene 2: Show league on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
                 .style("top", (event.pageY - 25) + "px")
-                .html(`<b>Name:</b> ${d.name}<br><b>Age:</b> ${d.age}<br><b>Overall:</b> ${d.overall}`);
+                .text(d[0]);
         })
         .on("mouseout", function () {
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "none");
+        })
+        .on("click", function (event, d) {
+            // Trigger drill down to Scene 3 with selected league
+            showScene3(data, d[0]);
         });
-    
-    // Adding x-axis
-    const xAxis = d3.axisBottom(xScale);
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0, ${chartHeight - margin.bottom})`)
-        .call(xAxis);
 
     // Adding y-axis
     const yAxis = d3.axisLeft(yScale);
@@ -141,6 +142,10 @@ function displayScatterPlotScene2(data, selectedNationality) {
         .attr("class", "y-axis")
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(yAxis);
+}
+
+
+// Function to trigger Scene 2 (Drill Down)
 
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
@@ -161,7 +166,7 @@ function showScene2(selectedNationality) {
         .then(csvData => {
             const data = parseCSVData(csvData);
             console.log(data); // Add this line to check the parsed data
-            displayScatterPlotScene2(data, selectedNationality); // Call the scatter plot function
+            displayBarChartScene2(data, selectedNationality);
         })
         .catch(error => console.error("Error fetching data:", error));
 }
