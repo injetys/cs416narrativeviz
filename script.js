@@ -1,19 +1,11 @@
+// Import D3.js library from the provided URL
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
 // Function to parse CSV data using D3
 function parseCSVData(csvData) {
     const rows = d3.csvParse(csvData);
     return rows;
 }
-
-// Function to count the rows in the dataset
-function countRows(csvData) {
-    const rows = csvData.split("\n");
-    return rows.length;
-}
-
-// ... (the rest of the code)
-
-// ... (previous code)
-
 // Function to create and display the bar chart for Scene 1
 function displayBarChartScene1(data) {
     const counts = {};
@@ -42,7 +34,6 @@ function displayBarChartScene1(data) {
     const svg = chartContainer.append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight);
-    
 
     // Adding bars
     const bars = svg.selectAll("rect")
@@ -78,7 +69,6 @@ function displayBarChartScene1(data) {
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(yAxis);
 }
-
 // Function to create and display the bar chart for Scene 2
 function displayBarChartScene2(data, selectedNationality) {
     const filteredData = data.filter(row => row.nationality_name === selectedNationality);
@@ -133,7 +123,7 @@ function displayBarChartScene2(data, selectedNationality) {
         })
         .on("click", function (event, d) {
             // Trigger drill down to Scene 3 with selected league
-            showScene3(data, d[0]);
+            showScene3(filteredData, d[0]);
         });
 
     // Adding y-axis
@@ -143,8 +133,6 @@ function displayBarChartScene2(data, selectedNationality) {
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(yAxis);
 }
-
-
 // Function to create and display the scatter plot for Scene 3
 function displayScatterPlotScene3(data) {
     const chartContainer = d3.select("#chart3");
@@ -200,9 +188,14 @@ function displayScatterPlotScene3(data) {
         .attr("fill", "#000")
         .text("Weight (kg)");
 }
-
-
-
+// Function to calculate average height and weight
+function calculateAverageHeightWeight(data) {
+    const totalHeight = data.reduce((acc, d) => acc + (+d.height_cm), 0);
+    const totalWeight = data.reduce((acc, d) => acc + (+d.weight_kg), 0);
+    const averageHeight = totalHeight / data.length;
+    const averageWeight = totalWeight / data.length;
+    return { averageHeight, averageWeight };
+}
 
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
@@ -211,9 +204,34 @@ function showScene1() {
         .then(csvData => {
             const data = parseCSVData(csvData);
             console.log(data); // Add this line to check the parsed data
+            const { averageHeight, averageWeight } = calculateAverageHeightWeight(data);
             displayBarChartScene1(data);
+            displayAverageHeightWeightScene1(averageHeight, averageWeight);
         })
         .catch(error => console.error("Error fetching data:", error));
+}
+
+// Function to display average height and weight for Scene 1
+function displayAverageHeightWeightScene1(averageHeight, averageWeight) {
+    const chartContainer = d3.select("#chart1");
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 10, right: 10, bottom: 30, left: 60 };
+    const svg = chartContainer.select("svg");
+
+    // Display average height
+    svg.append("text")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top)
+        .attr("text-anchor", "end")
+        .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
+
+    // Display average weight
+    svg.append("text")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top + 20)
+        .attr("text-anchor", "end")
+        .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
 }
 
 // Function to trigger Scene 2 (Drill Down)
@@ -223,51 +241,72 @@ function showScene2(selectedNationality) {
         .then(csvData => {
             const data = parseCSVData(csvData);
             console.log(data); // Add this line to check the parsed data
-            displayBarChartScene2(data, selectedNationality);
+            const filteredData = data.filter(row => row.nationality_name === selectedNationality);
+            const { averageHeight, averageWeight } = calculateAverageHeightWeight(filteredData);
+            displayBarChartScene2(filteredData, selectedNationality);
+            displayAverageHeightWeightScene2(averageHeight, averageWeight);
         })
         .catch(error => console.error("Error fetching data:", error));
 }
-// Function to trigger Scene 3 (Conclusion)
-function showScene3(data, selectedLeague) {
-    const filteredData = data.filter(row => row.league === selectedLeague);
 
-    // Display average height and weight (as before)
-    // ...
-
-    const chartContainer = d3.select("#chart3");
-    chartContainer.html(""); // Clear previous content
-
-    const chartWidth = 300;
-    const chartHeight = 150;
-
-    const svg = chartContainer.append("svg")
-        .attr("width", chartWidth)
-        .attr("height", chartHeight);
-
-    // Calculate average height and weight
-    const averageHeight = d3.mean(filteredData, d => +d.height_cm);
-    const averageWeight = d3.mean(filteredData, d => +d.weight_kg);
+// Function to display average height and weight for Scene 2
+function displayAverageHeightWeightScene2(averageHeight, averageWeight) {
+    const chartContainer = d3.select("#chart2");
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 10, right: 10, bottom: 30, left: 60 };
+    const svg = chartContainer.select("svg");
 
     // Display average height
     svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight / 3)
-        .attr("text-anchor", "middle")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top)
+        .attr("text-anchor", "end")
         .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
 
     // Display average weight
     svg.append("text")
-        .attr("x", chartWidth / 2)
-        .attr("y", chartHeight * 2 / 3)
-        .attr("text-anchor", "middle")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top + 20)
+        .attr("text-anchor", "end")
         .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
+}
 
-    // Drill down to Scene 3 with scatter plot
+// Function to create and display the scatter plot for Scene 3
+function displayScatterPlotScene3(data) {
+    // Code for the scatter plot as provided before
+}
+
+// Function to trigger Scene 3 (Drill Down)
+function showScene3(data, selectedLeague) {
+    const filteredData = data.filter(row => row.league === selectedLeague);
+    const { averageHeight, averageWeight } = calculateAverageHeightWeight(filteredData);
     displayScatterPlotScene3(filteredData);
-}
+    displayAverageHeightWeightScene3(averageHeight, averageWeight);
 }
 
+// Function to display average height and weight for Scene 3
+function displayAverageHeightWeightScene3(averageHeight, averageWeight) {
+    const chartContainer = d3.select("#chart3");
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 10, right: 10, bottom: 30, left: 60 };
+    const svg = chartContainer.select("svg");
 
+    // Display average height
+    svg.append("text")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top)
+        .attr("text-anchor", "end")
+        .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
+
+    // Display average weight
+    svg.append("text")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", margin.top + 20)
+        .attr("text-anchor", "end")
+        .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
+}
 
 // Call the main function when the script is loaded
-showScene1();   
+showScene1();
