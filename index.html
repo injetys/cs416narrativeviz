@@ -10,6 +10,7 @@
 
         h1 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         p {
@@ -27,7 +28,7 @@
         }
 
         #chart1, #chart2, #chart3 {
-            max-width: 500px;
+            max-width: 700px;
             margin: 30px auto;
             border: 1px solid #ccc;
             padding: 20px;
@@ -64,6 +65,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             font-size: 16px;
+            margin-bottom: 30px;
         }
 
         div.instructions h2 {
@@ -75,28 +77,7 @@
 </head>
 <body>
     <h1>Women's Soccer Scouting - Interactive Visualization</h1>
-    <p>
-        This data represents the top 100 women players of all time according to FIFA 23.
-        Use this narrative visualization to discover which nations and leagues produce the best players and explore the physical attributes of those players.
-        This tool can help you identify the key metrics to look for in different leagues.
-    </p>
-
-    <!-- Scene 1: Overview - Nationalities of Top 100 Players -->
-    <div id="chart1"></div>
-
-    <!-- Scene 2: Drill Down - Leagues in Selected Nationality -->
-    <div id="chart2"></div>
-
-    <!-- Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality -->
-    <div id="chart3"></div>
-
-    <!-- Include the D3.js library from the provided URL -->
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <!-- Include the script.js file containing the JavaScript code -->
-    <script src="script.js"></script>
-    <!-- Add this at the end of your HTML file, after the <script> tags -->
-    <div id="tooltip"></div>
-
+    
     <!-- Instructions for using the visualization -->
     <div class="instructions">
         <h2>How to Use</h2>
@@ -118,5 +99,30 @@
         </ul>
         <p>Use the drill-down functionality to gain deeper insights and find metrics to look for in different leagues.</p>
     </div>
+
+    <p>
+        This data represents the top 100 women players of all time according to FIFA 23.
+        Use this narrative visualization to discover which nations and leagues produce the best players and explore the physical attributes of those players.
+        This tool can help you identify the key metrics to look for in different leagues.
+    </p>
+
+    <!-- Scene 1: Overview - Nationalities of Top 100 Players -->
+    <h2>Scene 1: Overview - Nationalities of Top 100 Players</h2>
+    <div id="chart1"></div>
+
+    <!-- Scene 2: Drill Down - Leagues in Selected Nationality -->
+    <h2>Scene 2: Drill Down - Leagues in Selected Nationality</h2>
+    <div id="chart2"></div>
+
+    <!-- Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality -->
+    <h2>Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality</h2>
+    <div id="chart3"></div>
+
+    <!-- Include the D3.js library from the provided URL -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!-- Include the script.js file containing the JavaScript code -->
+    <script src="script.js"></script>
+    <!-- Add this at the end of your HTML file, after the <script> tags -->
+    <div id="tooltip"></div>
 </body>
 </html>
