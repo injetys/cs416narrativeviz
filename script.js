@@ -270,15 +270,11 @@ function displayAverageHeightWeightScene2(averageHeight, averageWeight) {
         .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
 }
 
-// Function to create and display the scatter plot for Scene 3
-function displayScatterPlotScene3(data) {
-    // Code for the scatter plot as provided before
-}
 
-// Function to trigger Scene 3 (Drill Down)
 function showScene3(data, selectedLeague) {
-    const filteredData = data.filter(row => row.league === selectedLeague);
+    const filteredData = data.filter(row => row.league_name === selectedLeague);
     const { averageHeight, averageWeight } = calculateAverageHeightWeight(filteredData);
+
     displayScatterPlotScene3(filteredData);
     displayAverageHeightWeightScene3(averageHeight, averageWeight);
 }
