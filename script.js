@@ -1,5 +1,3 @@
-// Import D3.js library from the provided URL
-<script src="https://d3js.org/d3.v6.min.js"></script>
 
 // Function to parse CSV data using D3
 function parseCSVData(csvData) {
