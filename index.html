@@ -2,6 +2,76 @@
 <html>
 <head>
     <title>Women's Soccer Scouting - Interactive Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        h2 {
+            margin-top: 40px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        #chart1, #chart2, #chart3 {
+            max-width: 500px;
+            margin: 30px auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        #tooltip {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        div.instructions {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        div.instructions h2 {
+            border: none;
+            padding-bottom: 5px;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Women's Soccer Scouting - Interactive Visualization</h1>
@@ -12,15 +82,12 @@
     </p>
 
     <!-- Scene 1: Overview - Nationalities of Top 100 Players -->
-    <h2>Scene 1: Overview - Nationalities of Top 100 Players</h2>
     <div id="chart1"></div>
 
     <!-- Scene 2: Drill Down - Leagues in Selected Nationality -->
-    <h2>Scene 2: Drill Down - Leagues in Selected Nationality</h2>
     <div id="chart2"></div>
 
     <!-- Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality -->
-    <h2>Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality</h2>
     <div id="chart3"></div>
 
     <!-- Include the D3.js library from the provided URL -->
@@ -28,10 +95,10 @@
     <!-- Include the script.js file containing the JavaScript code -->
     <script src="script.js"></script>
     <!-- Add this at the end of your HTML file, after the <script> tags -->
-    <div id="tooltip" style="display: none; position: absolute; background-color: #f9f9f9; padding: 5px; border: 1px solid #ccc;"></div>
+    <div id="tooltip"></div>
 
     <!-- Instructions for using the visualization -->
-    <div>
+    <div class="instructions">
         <h2>How to Use</h2>
         <ul>
             <li>Scene 1: Overview - Nationalities of Top 100 Players:</li>
