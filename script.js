@@ -146,6 +146,65 @@ function displayBarChartScene2(data, selectedNationality) {
 
 
 // Function to trigger Scene 2 (Drill Down)
+// Function to create and display the scatter plot for Scene 2
+function displayScatterPlotScene2(data, selectedNationality) {
+    const filteredData = data.filter(row => row.nationality_name === selectedNationality);
+
+    const chartContainer = d3.select("#chart2");
+    chartContainer.html(""); // Clear previous content
+
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+
+    const xScale = d3.scaleLinear()
+        .domain(d3.extent(filteredData, d => +d.age))
+        .range([margin.left, chartWidth - margin.right]);
+
+    const yScale = d3.scaleLinear()
+        .domain(d3.extent(filteredData, d => +d.overall))
+        .range([chartHeight - margin.bottom, margin.top]);
+
+    const svg = chartContainer.append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight);
+
+    // Adding circles (scatter plot points)
+    const circles = svg.selectAll("circle")
+        .data(filteredData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(+d.age))
+        .attr("cy", d => yScale(+d.overall))
+        .attr("r", 5)
+        .attr("fill", "steelblue")
+        .attr("opacity", 0.7)
+        .on("mouseover", function (event, d) {
+            // Tooltip for Scene 2: Show player details on hover
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "inline")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px")
+                .html(`<b>Name:</b> ${d.name}<br><b>Age:</b> ${d.age}<br><b>Overall:</b> ${d.overall}`);
+        })
+        .on("mouseout", function () {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "none");
+        });
+    
+    // Adding x-axis
+    const xAxis = d3.axisBottom(xScale);
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${chartHeight - margin.bottom})`)
+        .call(xAxis);
+
+    // Adding y-axis
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", `translate(${margin.left}, 0)`)
+        .call(yAxis);
 
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
@@ -166,7 +225,7 @@ function showScene2(selectedNationality) {
         .then(csvData => {
             const data = parseCSVData(csvData);
             console.log(data); // Add this line to check the parsed data
-            displayBarChartScene2(data, selectedNationality);
+            displayScatterPlotScene2(data, selectedNationality); // Call the scatter plot function
         })
         .catch(error => console.error("Error fetching data:", error));
 }
