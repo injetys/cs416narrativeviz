@@ -129,6 +129,10 @@ function displayBarChartScene2(data, selectedNationality) {
         .on("mouseout", function () {
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "none");
+        })
+        .on("click", function (event, d) {
+            // Trigger drill down to Scene 3 with selected league
+            showScene3(data, d[0]);
         });
 
     // Adding y-axis
@@ -138,6 +142,7 @@ function displayBarChartScene2(data, selectedNationality) {
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(yAxis);
 }
+
 
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
