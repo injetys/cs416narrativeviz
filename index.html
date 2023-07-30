@@ -29,13 +29,13 @@
 
         #chart1, #chart2, #chart3 {
             max-width: 500px;
-            margin: 30px auto;
+            margin: 20px auto;
             border: 1px solid #ccc;
-            padding: 20px;
+            padding: 10px;
             background-color: #f9f9f9;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            height: 400px; /* Adjust the height to make the chart containers taller */
+            border-radius: 2px;
+            height: 300px; /* Adjust the height to make the chart containers taller */
         }
 
         #tooltip {
@@ -115,16 +115,15 @@
     <h2>Scene 2: Drill Down - Leagues in Selected Nationality</h2>
     <div id="chart2"></div>
 
-    <!-- Display average height and weight below the charts -->
-    <div>
-        <h2>Average Height and Weight in Selected League and Nationality</h2>
-        <p>Height: <span id="avgHeight">--</span> cm</p>
-        <p>Weight: <span id="avgWeight">--</span> kg</p>
-    </div>
-
     <!-- Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality -->
     <h2>Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality</h2>
     <div id="chart3"></div>
 
     <!-- Include the D3.js library from the provided URL -->
-    <script src="https://d3js.org/d3.v
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!-- Include the script.js file containing the JavaScript code -->
+    <script src="script.js"></script>
+    <!-- Add this at the end of your HTML file, after the <script> tags -->
+    <div id="tooltip"></div>
+</body>
+</html>
