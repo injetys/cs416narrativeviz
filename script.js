@@ -1,8 +1,8 @@
 // Function to parse CSV data using D3
 function parseCSVData(csvData) {
     const rows = d3.csvParse(csvData);
+    console.log(rows); // Add this line to check the parsed data
     return rows;
-}
 
 // Function to count the rows in the dataset
 function countRows(csvData) {
