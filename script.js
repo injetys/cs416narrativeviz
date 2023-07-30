@@ -145,7 +145,64 @@ function displayBarChartScene2(data, selectedNationality) {
 }
 
 
-// Function to trigger Scene 2 (Drill Down)
+// Function to create and display the scatter plot for Scene 3
+function displayScatterPlotScene3(data) {
+    const chartContainer = d3.select("#chart3");
+    chartContainer.html(""); // Clear previous content
+
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+
+    const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => +d.height_cm)])
+        .range([margin.left, chartWidth - margin.right]);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => +d.weight_kg)])
+        .range([chartHeight - margin.bottom, margin.top]);
+
+    const svg = chartContainer.append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight);
+
+    // Adding scatter plot points
+    svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(+d.height_cm))
+        .attr("cy", d => yScale(+d.weight_kg))
+        .attr("r", 5)
+        .attr("fill", "steelblue");
+
+    // Adding x-axis
+    const xAxis = d3.axisBottom(xScale);
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${chartHeight - margin.bottom})`)
+        .call(xAxis)
+        .append("text")
+        .attr("x", chartWidth - margin.right)
+        .attr("y", -5)
+        .attr("fill", "#000")
+        .attr("text-anchor", "end")
+        .text("Height (cm)");
+
+    // Adding y-axis
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", `translate(${margin.left}, 0)`)
+        .call(yAxis)
+        .append("text")
+        .attr("y", 15)
+        .attr("fill", "#000")
+        .text("Weight (kg)");
+}
+
+
+
 
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
@@ -170,12 +227,12 @@ function showScene2(selectedNationality) {
         })
         .catch(error => console.error("Error fetching data:", error));
 }
-
-
-
 // Function to trigger Scene 3 (Conclusion)
 function showScene3(data, selectedLeague) {
     const filteredData = data.filter(row => row.league === selectedLeague);
+
+    // Display average height and weight (as before)
+    // ...
 
     const chartContainer = d3.select("#chart3");
     chartContainer.html(""); // Clear previous content
@@ -204,6 +261,10 @@ function showScene3(data, selectedLeague) {
         .attr("y", chartHeight * 2 / 3)
         .attr("text-anchor", "middle")
         .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
+
+    // Drill down to Scene 3 with scatter plot
+    displayScatterPlotScene3(filteredData);
+}
 }
 
 
