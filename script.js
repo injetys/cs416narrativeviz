@@ -1,3 +1,19 @@
+// Function to parse CSV data using D3
+function parseCSVData(csvData) {
+    const rows = d3.csvParse(csvData);
+    return rows;
+}
+
+// Function to count the rows in the dataset
+function countRows(csvData) {
+    const rows = csvData.split("\n");
+    return rows.length;
+}
+
+// ... (the rest of the code)
+
+// ... (previous code)
+
 // Function to create and display the bar chart for Scene 1
 function displayBarChartScene1(data) {
     const counts = {};
@@ -37,8 +53,8 @@ function displayBarChartScene1(data) {
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
         .attr("fill", "steelblue")
-        .attr("title", d => d[0]) // Add tooltip for nationality_name
         .on("mouseover", function (event, d) {
+            // Tooltip for Scene 1: Show nationality_name on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
@@ -50,6 +66,7 @@ function displayBarChartScene1(data) {
             tooltip.style("display", "none");
         })
         .on("click", function (event, d) {
+            // Trigger drill down to Scene 2 with selected nationality
             showScene2(d[0]);
         });
 
@@ -61,7 +78,6 @@ function displayBarChartScene1(data) {
         .call(yAxis);
 }
 
-// ... (rest of the code for Scene 1)
 // Function to create and display the bar chart for Scene 2
 function displayBarChartScene2(data, selectedNationality) {
     const filteredData = data.filter(row => row.nationality_name === selectedNationality);
@@ -102,8 +118,8 @@ function displayBarChartScene2(data, selectedNationality) {
         .attr("width", xScale.bandwidth())
         .attr("height", d => chartHeight - margin.bottom - yScale(d[1]))
         .attr("fill", "steelblue")
-        .attr("title", d => d[0]) // Add tooltip for league name
         .on("mouseover", function (event, d) {
+            // Tooltip for Scene 2: Show league on hover
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "inline")
                 .style("left", (event.pageX + 10) + "px")
@@ -123,9 +139,6 @@ function displayBarChartScene2(data, selectedNationality) {
         .call(yAxis);
 }
 
-// ... (rest of the code for Scene 2)
-// ... (rest of the code)
-
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
     const csvFilePath = 'female_players_legacy.csv';
@@ -136,8 +149,40 @@ function showScene1() {
         })
         .catch(error => console.error("Error fetching data:", error));
 }
+// ... (previous code)
 
-// ... (rest of the code)
+// Function to trigger Scene 3 (Conclusion)
+function showScene3(data, selectedLeague) {
+    const filteredData = data.filter(row => row.league === selectedLeague);
+
+    const chartContainer = d3.select("#chart");
+    chartContainer.html(""); // Clear previous content
+
+    const chartWidth = 300;
+    const chartHeight = 150;
+
+    const svg = chartContainer.append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight);
+
+    // Calculate average height and weight
+    const averageHeight = d3.mean(filteredData, d => +d.height_cm);
+    const averageWeight = d3.mean(filteredData, d => +d.weight_kg);
+
+    // Display average height
+    svg.append("text")
+        .attr("x", chartWidth / 2)
+        .attr("y", chartHeight / 3)
+        .attr("text-anchor", "middle")
+        .text(`Average Height: ${averageHeight.toFixed(2)} cm`);
+
+    // Display average weight
+    svg.append("text")
+        .attr("x", chartWidth / 2)
+        .attr("y", chartHeight * 2 / 3)
+        .attr("text-anchor", "middle")
+        .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
+}
 
 // Function to trigger Scene 2 (Drill Down)
 function showScene2(selectedNationality) {
