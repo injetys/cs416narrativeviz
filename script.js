@@ -145,17 +145,33 @@ function displayBarChartScene2(data, selectedNationality) {
 }
 
 
+// Function to trigger Scene 2 (Drill Down)
+
 // Function to trigger Scene 1 (Overview)
 function showScene1() {
     const csvFilePath = 'female_players_legacy.csv';
     d3.text(csvFilePath)
         .then(csvData => {
             const data = parseCSVData(csvData);
+            console.log(data); // Add this line to check the parsed data
             displayBarChartScene1(data);
         })
         .catch(error => console.error("Error fetching data:", error));
 }
-// ... (previous code)
+
+// Function to trigger Scene 2 (Drill Down)
+function showScene2(selectedNationality) {
+    const csvFilePath = 'female_players_legacy.csv';
+    d3.text(csvFilePath)
+        .then(csvData => {
+            const data = parseCSVData(csvData);
+            console.log(data); // Add this line to check the parsed data
+            displayBarChartScene2(data, selectedNationality);
+        })
+        .catch(error => console.error("Error fetching data:", error));
+}
+
+
 
 // Function to trigger Scene 3 (Conclusion)
 function showScene3(data, selectedLeague) {
@@ -190,16 +206,7 @@ function showScene3(data, selectedLeague) {
         .text(`Average Weight: ${averageWeight.toFixed(2)} kg`);
 }
 
-// Function to trigger Scene 2 (Drill Down)
-function showScene2(selectedNationality) {
-    const csvFilePath = 'female_players_legacy.csv';
-    d3.text(csvFilePath)
-        .then(csvData => {
-            const data = parseCSVData(csvData);
-            displayBarChartScene2(data, selectedNationality);
-        })
-        .catch(error => console.error("Error fetching data:", error));
-}
+
 
 // Call the main function when the script is loaded
 showScene1();
