@@ -22,7 +22,7 @@ function displayBarChartScene1(data) {
         counts[nationality] = (counts[nationality] || 0) + 1;
     });
 
-    const chartContainer = d3.select("#chart");
+    const chartContainer = d3.select("#chart1");
     chartContainer.html(""); // Clear previous content
 
     const chartWidth = 500;
@@ -42,6 +42,7 @@ function displayBarChartScene1(data) {
     const svg = chartContainer.append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight);
+    
 
     // Adding bars
     const bars = svg.selectAll("rect")
@@ -87,7 +88,7 @@ function displayBarChartScene2(data, selectedNationality) {
         counts[league] = (counts[league] || 0) + 1;
     });
 
-    const chartContainer = d3.select("#chart");
+    const chartContainer = d3.select("#chart2");
     chartContainer.html(""); // Clear previous content
 
     const chartWidth = 500;
