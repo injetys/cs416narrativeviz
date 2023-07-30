@@ -209,4 +209,4 @@ function showScene3(data, selectedLeague) {
 
 
 // Call the main function when the script is loaded
-showScene1();
+showScene1();   
