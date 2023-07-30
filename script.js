@@ -65,6 +65,75 @@ function displayScatterPlotScene1(data) {
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(yAxis);
 }
+
+
+
+// Function to create and display the scatter plot for Scene 2
+function displayScatterPlotScene2(data) {
+    const chartContainer = d3.select("#chart-scene2");
+    chartContainer.html(""); // Clear previous content
+
+    const chartWidth = 500;
+    const chartHeight = 300;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+
+    const xScale = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.age))
+        .range([margin.left, chartWidth - margin.right]);
+
+    const yScale = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.overall))
+        .range([chartHeight - margin.bottom, margin.top]);
+
+    const svg = chartContainer.append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight);
+
+    // Adding circles for the scatter plot
+    const circles = svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(d.age))
+        .attr("cy", d => yScale(d.overall))
+        .attr("r", 5)
+        .attr("fill", "steelblue")
+        .attr("title", d => `Age: ${d.age}, Overall: ${d.overall}`)
+        .on("mouseover", function (event, d) {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "inline")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px")
+                .text(`Age: ${d.age}, Overall: ${d.overall}`);
+        })
+        .on("mouseout", function () {
+            const tooltip = d3.select("#tooltip");
+            tooltip.style("display", "none");
+        });
+
+    // Adding x-axis
+    const xAxis = d3.axisBottom(xScale);
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${chartHeight - margin.bottom})`)
+        .call(xAxis);
+
+    // Adding y-axis
+    const yAxis = d3.axisLeft(yScale);
+    svg.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", `translate(${margin.left}, 0)`)
+        .call(yAxis);
+
+    // Adding title for Scene 2
+    svg.append("text")
+        .attr("x", chartWidth / 2)
+        .attr("y", margin.top / 2)
+        .attr("text-anchor", "middle")
+        .attr("font-weight", "bold")
+        .text("Scene 2: Scatter Plot of Age vs. Overall");
+}
+
 // Function to create and display the scatter plot for Scene 3
 function displayScatterPlotScene3(data) {
     const chartContainer = d3.select("#chart");
