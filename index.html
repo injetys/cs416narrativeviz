@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Narrative Visualizah - Interactive Slideshow</title>
+    <title>Women's Soccer Scouting - Interactive Visualization</title>
 </head>
 <body>
-    <h1>Narrative Visualization - Interactive Slideshow</h1>
+    <h1>Women's Soccer Scouting - Interactive Visualization</h1>
+    <p>
+        This data represents the top 100 women players of all time according to FIFA 23.
+        Use this narrative visualization to discover which nations and leagues produce the best players and explore the physical attributes of those players.
+        This tool can help you identify the key metrics to look for in different leagues.
+    </p>
+
+    <!-- Scene 1: Overview - Nationalities of Top 100 Players -->
+    <h2>Scene 1: Overview - Nationalities of Top 100 Players</h2>
     <div id="chart1"></div>
+
+    <!-- Scene 2: Drill Down - Leagues in Selected Nationality -->
+    <h2>Scene 2: Drill Down - Leagues in Selected Nationality</h2>
     <div id="chart2"></div>
+
+    <!-- Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality -->
+    <h2>Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality</h2>
     <div id="chart3"></div>
 
     <!-- Include the D3.js library from the provided URL -->
@@ -16,5 +30,26 @@
     <!-- Add this at the end of your HTML file, after the <script> tags -->
     <div id="tooltip" style="display: none; position: absolute; background-color: #f9f9f9; padding: 5px; border: 1px solid #ccc;"></div>
 
+    <!-- Instructions for using the visualization -->
+    <div>
+        <h2>How to Use</h2>
+        <ul>
+            <li>Scene 1: Overview - Nationalities of Top 100 Players:</li>
+            <ul>
+                <li>Hover over a bar to view the nationality name in a tooltip.</li>
+                <li>Click on a bar to drill down to Scene 2 and explore leagues in the selected nationality.</li>
+            </ul>
+            <li>Scene 2: Drill Down - Leagues in Selected Nationality:</li>
+            <ul>
+                <li>Hover over a bar to view the league name in a tooltip.</li>
+                <li>Click on a bar to drill down to Scene 3 and explore physical attributes of players in the selected league and nationality.</li>
+            </ul>
+            <li>Scene 3: Conclusion - Physical Attributes of Players in Selected League and Nationality:</li>
+            <ul>
+                <li>Explore the scatter plot to analyze the correlation between player height (x-axis) and weight (y-axis).</li>
+            </ul>
+        </ul>
+        <p>Use the drill-down functionality to gain deeper insights and find metrics to look for in different leagues.</p>
+    </div>
 </body>
 </html>
