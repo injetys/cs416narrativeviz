@@ -84,7 +84,7 @@ function displayBarChartScene2(data, selectedNationality) {
     const filteredData = data.filter(row => row.nationality_name === selectedNationality);
     const counts = {};
     filteredData.forEach(row => {
-        const league = row.league;
+        const league = row.league_name;
         counts[league] = (counts[league] || 0) + 1;
     });
 
